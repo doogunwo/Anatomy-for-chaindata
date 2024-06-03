@@ -4,7 +4,7 @@ import (
     "flag"
     "fmt"
     "log"
-    "github.com/doogunwo/OCGethStorage/pkg/ethclient"
+    "main/internal/ethclient"
 )
 
 func main() {
