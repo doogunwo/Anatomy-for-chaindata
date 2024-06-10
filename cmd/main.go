@@ -1,30 +1,37 @@
 package main
 
 import (
-    "flag"
-    "fmt"
-    "log"
-    "main/internal/ethclient"
+	"github.com/ethereum/go-ethereum/ethclient"
+	"github.com/rcrowley/go-metrics"
+	"github.com/ethereum/go-ethereum/ethdb"
+    
+	
+
+	"fmt"
+	"log"
+
 )
 
-func main() {
-    ipcPath := flag.String("ipcPath", "", "Path to geth.ipc")
-    flag.Parse()
+const (
+	ipcPath = "/mnt/nvme0n1/ehtereum/execution/node160/geth.ipc"
+	chaindataPath ="/mnt/nvme0n1/ehtereum/execution/node160/geth/chaindata"
+)
 
-    if *ipcPath == "" {
-        log.Fatal("ipcPath is required")
-    }
+func main(){
 
-    client, err := ethclient.Dial(*ipcPath)
-    if err != nil {
-        log.Fatalf("Failed to connect to the Ethereum client: %v", err)
-    }
+	client, err := ethclient.Dial(ipcPath)
+	if err != nil {
+		log.Fatalf("failed to connect th the Ethereum client : %v", err)
+	}
+	defer client.Close()
+	
 
-    // Example usage
-    blockNumber, err := client.BlockNumber()
-    if err != nil {
-        log.Fatalf("Failed to retrieve block number: %v", err)
-    }
+	registry := metrics.NewRegistry()
 
-    fmt.Printf("Current block number: %d\n", blockNumber)
+	// leveldb Get 함수 호출 횟수 메트릭 등록
+	getCounter := metrics.NewCounter()
+	registry.Register("leveldb.gets", getCounter)
+
+	
 }
+
